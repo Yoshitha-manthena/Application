@@ -1,0 +1,98 @@
+<template>
+    <div class="dashboard-container">
+        <!-- Navigation Bar -->
+        <nav class="nav-bar">
+            <ul>
+                <li class={newLeaveClass} onclick={handleTabChange} data-tab="newLeave">New Leave Request</li>
+                <li class={appliedRequestsClass} onclick={handleTabChange} data-tab="appliedRequests">Applied Requests</li>
+                <li class={leaveHistoryClass} onclick={handleTabChange} data-tab="leaveHistory">Leave History</li>
+                <li class="logout" onclick={handleLogout}>Logout</li>
+            </ul>
+        </nav>
+
+        <!-- New Leave Request Tab -->
+        <div if:true={isNewLeave}>
+            <form class="form-container">
+                <div class="form-group">
+                    <label for="leaveType">Type of Leave <span class="required">*</span></label>
+                    <select id="leaveType" required onchange={handleInputChange} data-field="leaveType">
+                        <option value="">Select</option>
+                        <option value="Annual">Annual</option>
+                        <option value="Sick">Sick</option>
+                        <option value="Unpaid">Unpaid</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="startDate">Start Date <span class="required">*</span></label>
+                    <input type="date" id="startDate" required min={today} onchange={handleInputChange} data-field="startDate" />
+                </div>
+                <div class="form-group">
+                    <label for="endDate">End Date <span class="required">*</span></label>
+                    <input type="date" id="endDate" required min={today} onchange={handleInputChange} data-field="endDate" />
+                </div>
+                <div class="form-group">
+                    <label for="reason">Reason</label>
+                    <textarea id="reason" rows="4" onchange={handleInputChange} data-field="reason"></textarea>
+                </div>
+                <div class="button-group">
+                    <button class="submit-btn" type="button" onclick={handleSubmit}>Submit</button>
+                    <button class="cancel-btn" type="button" onclick={handleCancel}>Cancel</button>
+                </div>
+                <div if:true={formMessage} class="message">{formMessage}</div>
+            </form>
+        </div>
+
+        <!-- Applied Requests Tab -->
+        <div if:true={isAppliedRequests}>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={appliedRequests} for:item="request">
+                        <tr key={request.Id}>
+                            <td>{request.Type_of_Leave__c}</td>
+                            <td>{request.Start_Date__c}</td>
+                            <td>{request.End_Date__c}</td>
+                            <td>{request.Reason__c}</td>
+                            <td>{request.Status__c}</td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Leave History Tab -->
+        <div if:true={isLeaveHistory}>
+            <div class="balance-container">
+                <h2>Leave Balance</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Month</th>
+                            <th>Leaves Remaining</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={leaveBalances} for:item="balance">
+                            <tr key={balance.month}>
+                                <td>{balance.month}</td>
+                                <td>{balance.leaves}</td>
+                            </tr>
+                        </template>
+                        <tr>
+                            <td><strong>Total</strong></td>
+                            <td><strong>{totalLeaves}</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</template>

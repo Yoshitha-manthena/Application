@@ -1,0 +1,160 @@
+.dashboard-container {
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+    max-width: 800px;
+    margin: 2rem auto;
+    background: #f5f5f7;
+    border-radius: 18px;
+    padding: 2rem;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.nav-bar {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.nav-bar ul {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-bar li {
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    color: #1d1d1f;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+}
+
+.nav-bar li.active {
+    color: #007aff;
+    border-bottom: 2px solid #007aff;
+}
+
+.nav-bar .logout {
+    margin-left: auto;
+    color: #ff2d55;
+}
+
+.nav-bar .logout:hover {
+    color: #ff4d6a;
+}
+
+.form-container {
+    background: #ffffff;
+    padding: 1.5rem;
+    border-radius: 12px;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 1rem;
+    color: #1d1d1f;
+    margin-bottom: 0.5rem;
+}
+
+.form-group .required {
+    color: #ff2d55;
+}
+
+.form-group select,
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d2d2d7;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #1d1d1f;
+    background: #f5f5f7;
+}
+
+.form-group select:focus,
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #007aff;
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2);
+}
+
+.button-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.submit-btn {
+    background: #007aff;
+    color: #ffffff;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.submit-btn:hover {
+    background: #005bb5;
+}
+
+.cancel-btn {
+    background: #ff2d55;
+    color: #ffffff;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.cancel-btn:hover {
+    background: #cc2444;
+}
+
+.message {
+    margin-top: 1rem;
+    color: #007aff;
+    font-size: 0.9rem;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.table th,
+.table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #d2d2d7;
+}
+
+.table th {
+    background: #f5f5f7;
+    font-weight: 600;
+    color: #1d1d1f;
+}
+
+.balance-container {
+    background: #ffffff;
+    padding: 1.5rem;
+    border-radius: 12px;
+}
+
+.balance-container h2 {
+    font-size: 1.5rem;
+    color: #1d1d1f;
+    margin-bottom: 1rem;
+}
