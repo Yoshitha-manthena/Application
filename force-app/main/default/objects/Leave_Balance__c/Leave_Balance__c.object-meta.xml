@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Leave Balance</label>
+    <pluralLabel>Leave Balances</pluralLabel>
+    <fields>
+        <fullName>Employee__c</fullName>
+        <type>Lookup</type>
+        <referenceTo>User</referenceTo>
+        <required>true</required>
+    </fields>
+    <fields>
+        <fullName>Month__c</fullName>
+        <type>Text</type>
+        <required>true</required>
+    </fields>
+    <fields>
+        <fullName>Leaves_Remaining__c</fullName>
+        <type>Number</type>
+        <precision>18</precision>
+        <scale>0</scale>
+        <defaultValue>2</defaultValue>
+    </fields>
+    <deploymentStatus>Deployed</deploymentStatus>
+</CustomObject>
