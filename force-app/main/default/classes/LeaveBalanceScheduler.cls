@@ -5,12 +5,12 @@ global class LeaveBalanceScheduler implements Schedulable {
         for (User u : [SELECT Id FROM User WHERE IsActive = true]) {
             Leave_Balance__c existingBalance = [SELECT Id, Leaves_Remaining__c 
                                                FROM Leave_Balance__c 
-                                               WHERE Employee__c = :u.Id 
+                                               WHERE Emploee__c = :u.Id 
                                                AND Month__c = :currentMonth 
                                                LIMIT 1];
             if (existingBalance == null) {
                 balances.add(new Leave_Balance__c(
-                    Employee__c = u.Id,
+                    Emploee__c = u.Id,
                     Month__c = currentMonth,
                     Leaves_Remaining__c = 2
                 ));
