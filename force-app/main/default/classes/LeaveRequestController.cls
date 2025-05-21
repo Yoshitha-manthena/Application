@@ -1,6 +1,4 @@
 public with sharing class LeaveRequestController {
-    // Existing methods (submitLeaveRequest, getAppliedRequests, getLeaveBalance) remain unchanged
-
     @AuraEnabled
     public static String submitLeaveRequest(String typeOfLeave, Date startDate, Date endDate, String reason) {
         try {
@@ -48,21 +46,20 @@ public with sharing class LeaveRequestController {
         return balanceMap;
     }
 
-    // New method to update leave balance on approval
     @AuraEnabled
     public static void updateLeaveBalance(String leaveRequestId) {
         try {
-            Leave_Request__c request = [SELECT Start_Date__c, End_Date__c, Status__c 
+            Leave_Request__c request = [SELECT Start_Date__c, End_Date__c, Status__c, Emploee__c 
                                        FROM Leave_Request__c 
                                        WHERE Id = :leaveRequestId LIMIT 1];
             if (request.Status__c != 'Approved') {
-                return; // Only process approved requests
+                return;
             }
             String month = request.Start_Date__c.year() + '-' + String.valueOf(request.Start_Date__c.month()).leftPad(2, '0');
-            Integer days = request.Start_Date__c.daysBetween(request.End_Date__c) + 1; // Include end date
+            Integer days = request.Start_Date__c.daysBetween(request.End_Date__c) + 1;
             Leave_Balance__c balance = [SELECT Leaves_Remaining__c 
                                        FROM Leave_Balance__c 
-                                       WHERE Emploee__c = :UserInfo.getUserId() 
+                                       WHERE Emploee__c = :request.Emploee__c 
                                        AND Month__c = :month 
                                        LIMIT 1];
             if (balance == null) {
@@ -75,6 +72,53 @@ public with sharing class LeaveRequestController {
             update balance;
         } catch (Exception e) {
             throw new AuraHandledException('Error updating leave balance: ' + e.getMessage());
+        }
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static List<Map<String, Object>> getPendingRequestsForManager() {
+        List<Map<String, Object>> results = new List<Map<String, Object>>();
+        List<Leave_Request__c> requests = [SELECT Id, Type_of_Leave__c, Start_Date__c, End_Date__c, Reason__c, 
+                                           Emploee__r.Name,  Status__c 
+                                           FROM Leave_Request__c 
+                                           WHERE Status__c = 'Pending' 
+                                           ORDER BY CreatedDate DESC];
+        for (Leave_Request__c request : requests) {
+            String month = request.Start_Date__c.year() + '-' + String.valueOf(request.Start_Date__c.month()).leftPad(2, '0');
+            Leave_Balance__c balance = [SELECT Leaves_Remaining__c 
+                                       FROM Leave_Balance__c 
+                                       WHERE Emploee__c = :request.Emploee__c 
+                                       AND Month__c = :month 
+                                       LIMIT 1];
+            Map<String, Object> result = new Map<String, Object>();
+            result.put('Id', request.Id);
+            result.put('Type_of_Leave__c', request.Type_of_Leave__c);
+            result.put('Start_Date__c', request.Start_Date__c);
+            result.put('End_Date__c', request.End_Date__c);
+            result.put('Reason__c', request.Reason__c);
+            //result.put('Employee_Name', request.Employee__r.Name);
+            //result.put('Employee_Email', request.Employee__r.Email);
+            result.put('Leaves_Remaining__c', balance != null ? balance.Leaves_Remaining__c : 0);
+            results.add(result);
+        }
+        return results;
+    }
+
+    // Updated method without email notifications
+    @AuraEnabled
+    public static String processLeaveRequest(String leaveRequestId, String status) {
+        try {
+            Leave_Request__c request = [SELECT Id, Status__c 
+                                       FROM Leave_Request__c 
+                                       WHERE Id = :leaveRequestId LIMIT 1];
+            if (status != 'Approved' && status != 'Rejected') {
+                throw new AuraHandledException('Invalid status: ' + status);
+            }
+            request.Status__c = status;
+            update request;
+            return 'Leave request ' + status + ' successfully!';
+        } catch (Exception e) {
+            throw new AuraHandledException('Error processing request: ' + e.getMessage());
         }
     }
 }
