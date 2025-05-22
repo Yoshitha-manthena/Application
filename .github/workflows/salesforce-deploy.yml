@@ -1,18 +1,31 @@
-name: Deploy to Salesforce
+name: Salesforce Deploy
 on:
   push:
+    branches:
+      - main
+  pull_request:
     branches:
       - main
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
       - name: Install Salesforce CLI
-        run: npm install -g @salesforce/cli
-      - name: Authenticate with Salesforce
         run: |
-          echo "${{ secrets.SF_AUTH_URL }}" > authfile
-          sf org login sfdx-url --sfdx-url-file authfile --alias MyDevOrg
-      - name: Deploy to Salesforce
-        run: sf project deploy start --target-org MyDevOrg --source-dir force-app
+          npm install -g @salesforce/cli
+          sf --version
+      - name: Authenticate to MyDevOrg
+        run: |
+          echo "${{ secrets.SFDX_AUTH_URL }}" > authfile.txt
+          sf org login sfdx-url --sfdx-url-file authfile.txt --alias MyDevOrg
+        env:
+          SFDX_AUTH_URL: ${{ secrets.SFDX_AUTH_URL }}
+      - name: Deploy to MyDevOrg
+        run: |
+          sf project deploy start --target-org MyDevOrg --source-dir force-app/main/default
